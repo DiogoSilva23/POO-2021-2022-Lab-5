@@ -141,8 +141,8 @@ public class CLI {
                         }
                         System.out.println(bank.accountAllowsDebt(accountId) ? "Sim" : "Não");
                         System.out.println(bank.getAccountBalance(accountId));
-                        break;
                     }
+                    break;
                 default:
                     System.out.println("Instrução inválida.");
             }
