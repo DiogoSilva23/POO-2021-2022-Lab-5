@@ -2,6 +2,7 @@ package controllers;
 
 import models.Client;
 
+import java.io.*;
 import java.util.Collection;
 
 public class Bank {
@@ -46,15 +47,44 @@ public class Bank {
         return null;
     }
 
-    public Account getAccount(final String accountId) {
-        return null;
-    }
-
     public boolean accountAllowsDebt(final String accountId) {
         return false;
     }
 
     public double getAccountBalance(final String accountId) {
         return 0;
+    }
+
+    public void save(String filename) {
+        try {
+            final var fileOutputStream = new FileOutputStream(filename);
+            final var objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(this);
+            objectOutputStream.close();
+        } catch(FileNotFoundException fnfe) {
+            System.out.println("Ficheiro inexistente.");
+        } catch(IOException ioe) {
+            System.out.println("Erro na gravação de objetos.");
+        }
+    }
+
+    public static Bank load(String filename) throws FileNotFoundException {
+        FileInputStream fileInputStream = null;
+        fileInputStream = new FileInputStream(filename);
+        ObjectInputStream objectInputStream = null;
+        try {
+            objectInputStream = new ObjectInputStream(fileInputStream);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        Object obj = null;
+        try {
+            obj = objectInputStream.readObject();
+        } catch(IOException e) {
+            e.printStackTrace();
+        } catch(ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return (Bank)obj;
     }
 }

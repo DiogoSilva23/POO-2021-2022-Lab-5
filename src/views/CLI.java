@@ -3,6 +3,7 @@ package views;
 import controllers.Bank;
 import models.Client;
 
+import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.Scanner;
 
@@ -141,6 +142,19 @@ public class CLI {
                         }
                         System.out.println(bank.accountAllowsDebt(accountId) ? "Sim" : "Não");
                         System.out.println(bank.getAccountBalance(accountId));
+                    }
+                    break;
+                case "G":
+                    var filename = commands[1];
+                    bank.save(filename);
+                    System.out.println("Ficheiro gravado com sucesso.");
+                    break;
+                case "L":
+                    filename = commands[1];
+                    try {
+                        bank = Bank.load(filename);
+                    } catch(FileNotFoundException e) {
+                        System.out.println("Ficheiro inexistente.");
                     }
                     break;
                 default:
