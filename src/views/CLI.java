@@ -51,7 +51,7 @@ public class CLI {
                         System.out.println("Sem clientes registados.");
                     } else {
                         Collection<Client> clients = bank.getClients();
-                        // TODO: sort the client collection
+                        // TODO: Ordenar por ordem crescente de data de nascimento, e por ordem de tipo de documento de identificação (CC, P) dentro da mesma data de nascimento, e por ordem de número de identificação para o mesmo tipo de documento.
                         for(final var client : clients) {
                             System.out.println("[" + client.getId() + " " + client.getIdTypeSymbol() + "]" +
                                     client.getBirthday() + " " + client.getName() +
@@ -65,7 +65,7 @@ public class CLI {
                     clientId = commands[1];
                     clientIdType = commands[2];
                     final var allowDebtParam = commands[3];
-                    final var allowDebt = allowDebtParam.equalsIgnoreCase("Sim");
+                    var allowDebt = allowDebtParam.equalsIgnoreCase("Sim");
                     var amount = 0.0;
                     if(commands.length == 5) {
                         amount = Double.parseDouble(commands[4]);
@@ -118,6 +118,30 @@ public class CLI {
                     else{
                         bank.registerCashflow(clientId, clientIdType, accountId, amount);
                         System.out.println("Movimento efetuado com sucesso.");
+                    }
+                    break;
+                case "SC":
+                    clientId = commands[1];
+                    clientIdType = commands[2];
+                    accountId = commands[3];
+                    if(!bank.hasClient(clientId, clientIdType)) {
+                        System.out.println("Cliente inexistente.");
+                    }
+                    else if(!bank.hasAccount(accountId)) {
+                        System.out.println("Conta inexistente.");
+                    }
+                    else if(!bank.isAuthorized(clientId, clientIdType, accountId)) {
+                        System.out.println("Cliente não autorizado.");
+                    }
+                    else {
+                        Collection<Client> clients = bank.getAccountClients(accountId);
+                        // TODO: Ordenar por nome de cliente.
+                        for(Client client : clients) {
+                            System.out.println(client.getName() + " [" + client.getId() + " " + client.getIdTypeSymbol() + "]" );
+                        }
+                        System.out.println(bank.accountAllowsDebt(accountId) ? "Sim" : "Não");
+                        System.out.println(bank.getAccountBalance(accountId));
+                        break;
                     }
                 default:
                     System.out.println("Instrução inválida.");

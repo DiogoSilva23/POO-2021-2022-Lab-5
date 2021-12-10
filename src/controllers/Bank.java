@@ -41,4 +41,20 @@ public class Bank {
 
     }
     public boolean isAuthorized(final String clientId, final String clientIdType, final String accountId) { return false; }
+
+    public Collection<Client> getAccountClients(final String accountId) {
+        return null;
+    }
+
+    public Account getAccount(final String accountId) {
+        return null;
+    }
+
+    public boolean accountAllowsDebt(final String accountId) {
+        return false;
+    }
+
+    public double getAccountBalance(final String accountId) {
+        return 0;
+    }
 }
