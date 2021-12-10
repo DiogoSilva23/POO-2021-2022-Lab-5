@@ -1,30 +1,70 @@
 package controllers;
 
+import models.Account;
+import models.CashflowRate;
 import models.Client;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Bank {
-    public boolean hasClient(final String clientId, final String clientIdType) { return false; }
+    private Map<String, Client> clients = new HashMap<>();
+    private Map<String, Account> accounts = new HashMap<>();
+    private Collection<CashflowRate> rates = new ArrayList<>();
+    private long numAccounts = 0L;
 
-    public void createClient(final String clientId, final String clientIdType, final String birthday, final String email, final String phoneNumber, final String clientName, final String address) {
-
+    public Bank() {
+        rates.add(new CashflowRate(0.42));
     }
 
-    public void changeClient(final String clientId, final String clientIdType, final String birthday, final String email, final String phoneNumber, final String clientName, final String address) {
+    public boolean hasClient(final String clientId, final String clientIdType) {
+        return clients.containsKey(clientId);
+    }
 
+    private static String getKey(final String clientId, final String clientIdType) {
+        return clientIdType + clientId;
+    }
+
+    public void createClient(final String clientId, final String clientIdType, final String birthday, final String email,
+                             final String phoneNumber, final String clientName, final String address) {
+        final var client = new Client(clientId, clientIdType, birthday, email, address,
+                phoneNumber, clientName);
+        clients.put(getKey(clientIdType, clientId), client);
+    }
+
+    public void changeClient(final String clientId, final String clientIdType, final String birthday, final String email,
+                             final String phoneNumber, final String clientName, final String address) {
+        final var client = clients.get(getKey(clientId, clientIdType));
+        client.setBirthday(birthday);
+        client.setEmail(email);
+        client.setPhoneNumber(phoneNumber);
+        client.setName(clientName);
+        client.setAddress(address);
     }
 
     public Collection<Client> getClients() {
-        return null;
+        return clients.values();
     }
 
     public boolean hasClients() {
-        return false;
+        return !clients.isEmpty();
     }
 
-    public String createAccount(final String clientId, final String clientIdType, final boolean allowDebt, final double amount) { return null; }
+    public String createAccount(final String clientId, final String clientIdType, final boolean allowDebt, final double amount) {
+        final var client = clients.get(getKey(clientId, clientIdType));
+        String accountId = "" + numAccounts++;
+        final var account = new Account(accountId, client, allowDebt, amount);
+        accounts.put(accountId, account);
+        return accountId;
+    }
 
     public boolean isAmountValid(final double amount, final boolean allowDebt) {
         return false;
@@ -34,14 +74,20 @@ public class Bank {
         return false;
     }
 
-    public void shareAccount(final String clientId, final String clientIdType, final String accountId, final String sharedClientId, final String sharedClientIdType) {}
+    public void shareAccount(final String clientId, final String clientIdType, final String accountId, final String sharedClientId, final String sharedClientIdType) {
+    }
 
-    public boolean isCashflowAllowed(final String accountId, final double amount){ return false; }
+    public boolean isCashflowAllowed(final String accountId, final double amount) {
+        return false;
+    }
 
-    public void registerCashflow(final String clientId, final String clientIdType, final String accountId, final double amount){
+    public void registerCashflow(final String clientId, final String clientIdType, final String accountId, final double amount) {
 
     }
-    public boolean isAuthorized(final String clientId, final String clientIdType, final String accountId) { return false; }
+
+    public boolean isAuthorized(final String clientId, final String clientIdType, final String accountId) {
+        return false;
+    }
 
     public Collection<Client> getAccountClients(final String accountId) {
         return null;
@@ -85,6 +131,6 @@ public class Bank {
         } catch(ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return (Bank)obj;
+        return (Bank) obj;
     }
 }

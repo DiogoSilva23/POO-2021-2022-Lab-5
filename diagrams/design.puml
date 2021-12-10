@@ -46,8 +46,8 @@ package models {
 
 package controllers {
     class Bank {
-        -Collection<Client> clients
-        -Collection<Account> accounts
+        -Map<String, Client> clients
+        -Map<String, Account> accounts
         -Collection<CashflowRate> rates
         +boolean hasClient(String clientId, String idType)
         +void createClient(String clientId, String idType, String name, Date birthday, String email, String phoneNumber, String address)
